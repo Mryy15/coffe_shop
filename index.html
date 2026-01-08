@@ -1,0 +1,1053 @@
+<?php
+session_start();
+?>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coffee Shop</title>
+
+  <!-- GOOGLE FONT -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+
+  <!-- AOS -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+  <!-- FONT AWESOME CDN (ikon sosial) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    :root {
+      --coffee: #7a4a2e;
+      --soft-sky: #eef6fb;
+      --soft-sand: #f7efe5;
+      --glass: rgba(255,255,255,0.75);
+    }
+
+    * { box-sizing: border-box; scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: "Inter", sans-serif;
+      background: linear-gradient(180deg, var(--soft-sky), var(--soft-sand));
+      color: #333;
+    }
+
+    /* ===== NAVBAR ===== */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      background: var(--glass);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+      z-index: 9999;
+    }
+
+    nav {
+      max-width: 1200px;
+      margin: auto;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 50px;
+    }
+
+    nav h1 {
+      font-family: "Dancing Script", cursive;
+      font-size: 2rem;
+      color: var(--coffee);
+      margin: 0;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+      margin: 0;
+      padding: 0;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      color: #444;
+      font-weight: 500;
+      position: relative;
+    }
+
+    nav ul li a::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 2px;
+      left: 0;
+      bottom: -6px;
+      background: var(--coffee);
+      transition: 0.3s;
+    }
+
+    nav ul li a:hover::after { width: 100%; }
+
+    /* ===== HERO ===== */
+    .hero {
+      position: relative;
+      height: 100vh;
+      background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.35)),
+        url("https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=1400&q=80") center/cover fixed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding-top: 80px;
+      overflow: hidden;
+    }
+
+    .hero-content { color: white; max-width: 720px; }
+
+    .hero h2 {
+      font-family: "Dancing Script", cursive;
+      font-size: 5rem;
+      color: #fff;
+      margin-bottom: 10px;
+    }
+
+    .hero-subtitle {
+      font-style: italic;
+      font-size: 1.3rem;
+      opacity: 0.9;
+      margin-bottom: 20px;
+    }
+
+    .hero p { font-size: 1.2rem; line-height: 1.8; opacity: .95; margin-bottom: 35px; position: relative;  z-index: 1;}
+
+    .btn {
+      padding: 15px 38px;
+      background: linear-gradient(45deg, #7a4a2e, #9b6b4a);
+      color: white;
+      text-decoration: none;
+      border-radius: 30px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,.25);
+      transition: .3s;
+    }
+
+    .btn:hover { transform: translateY(-4px); }
+
+    section { max-width: 1200px; margin: auto; padding: 100px 20px; }
+
+    h2 {
+      text-align: center;
+      color: var(--coffee);
+      font-size: 2.6rem;
+      margin-bottom: 50px;
+      font-family: "Dancing Script", cursive;
+    }
+
+    /* ===== WAVE ===== */
+    .wave {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 100px;
+      background: url('https://www.svgrepo.com/download/472965/wave.svg') repeat-x;
+      background-size: cover;
+      animation: waveAnim 18s linear infinite;
+      opacity: 0.5;
+    }
+
+    @keyframes waveAnim {
+      0% { background-position-x: 0; }
+      100% { background-position-x: 1000px; }
+    }
+
+    /* ===== MENU ===== */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px,1fr));
+      gap: 30px;
+    }
+
+    .menu-item {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 12px 30px rgba(0,0,0,.12);
+      transition: .3s;
+    }
+
+    .menu-item:hover { transform: translateY(-8px); }
+
+    .menu-item img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 15px;
+      margin-bottom: 18px;
+    }
+
+    .price { color: var(--coffee); font-weight: 700; }
+
+    /* ===== GALLERY ===== */
+    #gallery { position: relative; overflow: hidden; }
+
+    #gallery::before {
+      content: "☀️";
+      font-size: 4rem;
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      opacity: 0.15;
+    }
+
+    #gallery::after {
+      content: "☕";
+      font-size: 2.5rem;
+      position: absolute;
+      bottom: 10px;
+      right: 15px;
+      opacity: 0.15;
+    }
+
+    .gallery {
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+    }
+
+    .gallery img {
+      width: 350px;
+      height: 230px;
+      object-fit: cover;
+      border-radius: 20px;
+      transition: .3s;
+      box-shadow: 0 10px 20px rgba(0,0,0,.1);
+    }
+
+    .gallery img:hover { transform: scale(1.05); }
+
+    /* ===== ABOUT ===== */
+    #about {
+      position: relative;
+      background: rgba(255,255,255,0.65);
+      border-radius: 25px;
+      padding: 80px 20px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+      overflow: hidden;
+      transition: 0.3s;
+    }
+
+    #about:hover {
+      transform: scale(1.02);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.12);
+    }
+
+    #about::before {
+      content: "☕";
+      font-size: 4rem;
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      opacity: 0.15;
+    }
+
+    #about::after {
+      content: "🌊";
+      font-size: 4rem;
+      position: absolute;
+      bottom: 20px;
+      right: 30px;
+      opacity: 0.15;
+    }
+
+    .about-text {
+      max-width: 800px;
+      margin: auto;
+      text-align: center;
+      line-height: 1.9;
+      font-size: 1.05rem;
+    }
+
+    .testimonial {
+      margin-top: 35px;
+      background: rgba(255,255,255,.85);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,.1);
+      text-align: center;
+      font-style: italic;
+    }
+
+    #about a {
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    /* ===== CONTACT ===== */
+    .reservation form {
+      max-width: 500px;
+      margin: auto;
+      display: grid;
+      gap: 15px;
+    }
+
+    .reservation input, .reservation button {
+      padding: 13px;
+      border-radius: 10px;
+      border: none;
+      font-family: "Inter", sans-serif;
+    }
+
+    .reservation input { background: #f5f5f5; }
+
+    .reservation button {
+      background: var(--coffee);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* ===== Login ===== */
+    .auth-area {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .auth-btn {
+      padding: 7px 16px;
+      border-radius: 20px;
+      border: none;
+      background: var(--coffee);
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+      position: relative;
+      z-index: 10000;
+      pointer-events: auto;
+      cursor: pointer;
+    }
+
+    .auth-btn.outline {
+      background: transparent;
+      color: var(--coffee);
+      border: 2px solid var(--coffee);
+    }
+
+    .user-greeting {
+      font-weight: 600;
+      color: var(--coffee);
+      margin-right: 10px;
+    }
+    .nav-auth {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      z-index: 10000;
+    }
+
+
+    /* ===== SOCIAL ICONS ===== */
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      margin-top: 40px;
+    }
+
+    .social-icons a {
+      color: var(--coffee);
+      font-size: 1.8rem;
+      transition: 0.3s;
+    }
+
+    .social-icons a:hover {
+      color: #000;
+      transform: scale(1.1);
+    }
+
+    footer {
+      background: var(--coffee);
+      color: white;
+      text-align: center;
+      padding: 30px;
+    }
+    
+    /* ===== LOGIN MODAL ===== */
+    .login-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+    }
+
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      width: 320px;
+      text-align: center;
+    }
+
+    .login-box h2 {
+      margin-bottom: 15px;
+      color: var(--coffee);
+    }
+
+    .login-box input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    .login-box button {
+      width: 100%;
+      padding: 10px;
+      background: var(--coffee);
+      color: white;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .close-login {
+      margin-top: 10px;
+      cursor: pointer;
+      color: #777;
+    }
+
+    /* ===== KERANJANG ===== */
+
+    .cart-icon {
+      position: relative;
+      font-size: 22px;
+      color: #f5c542;
+      cursor: pointer;
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -6px;
+      right: -10px;
+      background: red;
+      color: white;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 50%;
+    }
+
+    /* ===== KERANJANG MODAL ===== */
+    .cart-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+    }
+
+    .cart-box {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      width: 320px;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .cart-item button {
+      border: none;
+      background: red;
+      color: white;
+      cursor: pointer;
+      border-radius: 50%;
+    }
+
+    .qty-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  }
+
+  .qty-box button {
+    width: 22px;
+    height: 22px;
+    border: none;
+    border-radius: 50%;
+    background: #7a4a2e;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <h1>Coffee Shop</h1>
+      <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#gallery">Galeri</a></li>
+        <li><a href="#about">Tentang</a></li>
+        <li><a href="#contact">Kontak</a></li>
+      </ul>
+
+      <div class="nav-auth auth-area">
+      <button class="auth-btn" onclick="openLogin()">Login</button>
+      <button class="auth-btn outline" onclick="openRegister()">Daftar</button>
+      </div>
+
+      <div class="cart-icon" id="cartBtn">
+      <i class="fa-solid fa-cart-shopping"></i>
+      <span class="cart-count" id="cartCount">0</span>
+      </div>
+
+      <div class="cart-modal" id="cartModal">
+        <div class="cart-box">
+          <h3>Keranjang</h3>
+
+          <div id="cartItems"></div>
+
+          <hr>
+
+          <p><strong>Total: Rp <span id="cartTotal">0</span></strong></p>
+
+          <button onclick="checkout()">Checkout</button>
+          <button onclick="closeCart()">Tutup</button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <section id="home" class="hero">
+    <div class="hero-content" data-aos="fade-up">
+      <h2>Pantai Coffee Shop</h2>
+      <p class="hero-subtitle">Nikmati kopi terbaik dengan hembusan angin laut.</p>
+      <p>Tempat di mana aroma kopi berpadu dengan ketenangan pantai.  
+      Santai, modern, dan penuh rasa.</p>
+      <a href="#menu" class="btn">Explore Menu</a>
+    </div>
+    <div class="wave"></div>
+  </section>
+
+  <section id="menu">
+    <h2 data-aos="fade-up">Signature Menu</h2>
+    <div class="menu-grid">
+      <div class="menu-item" data-name="Latte Coconut Breeze" data-price="25000" data-aos="zoom-in" data-aos-delay="100">
+        <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=400&q=80">
+        <h3>Latte Coconut Breeze</h3>
+        <p class="price">Rp 25.000</p>
+        <button class="add-cart">Tambah ke Keranjang</button>
+      </div>
+      <div class="menu-item" data-name="Espresso Ocean Shot" data-price="20000" data-aos="zoom-in" data-aos-delay="200">
+        <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=80">
+        <h3>Espresso Ocean Shot</h3>
+        <p class="price">Rp 20.000</p>
+        <button class="add-cart">Tambah ke Keranjang</button>
+      </div>
+      <div class="menu-item" data-name="Surf Cappuccino" data-price="30000" data-aos="zoom-in" data-aos-delay="300">
+        <img src="https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=400&q=80">
+        <h3>Surf Cappuccino</h3>
+        <p class="price">Rp 30.000</p>
+         <button class="add-cart">Tambah ke Keranjang</button>
+      </div>
+    </div>
+
+    <div style="text-align:center; margin-top:50px;">
+      <a href="menu.html" class="btn">Lihat Menu Lengkap</a>
+    </div>
+  </section>
+
+  <section id="gallery">
+    <h2 data-aos="fade-up">Coffee & Coastal Moments</h2>
+    <div class="gallery">
+      <img src="https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=700&q=80">
+      <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&w=700&q=80">
+      <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=700&q=80">
+      <img src="https://images.unsplash.com/photo-1556740749-887f6717d7e4?auto=format&fit=crop&w=700&q=80">
+    </div>
+  </section>
+
+  <section id="about">
+    <a href="about.html">
+      <h2 data-aos="fade-up">Our Story</h2>
+      <p class="about-text" data-aos="fade-up" data-aos-delay="150">
+        Pantai Vibes Coffee hadir untuk kamu yang mencari ketenangan,  
+        rasa berkualitas, dan suasana modern yang nyaman. Kami terinspirasi  
+        oleh kesejukan pantai dan hangatnya aroma kopi — menciptakan tempat  
+        di mana setiap tegukan membawa kedamaian dan cerita.
+      </p>
+      <div class="testimonial" data-aos="flip-up">
+        “Sekali datang, rasanya ingin kembali lagi.”  
+        <br>— Coffee Lovers
+      </div>
+    </a>
+  </section>
+
+  <section id="contact">
+    <h2 data-aos="fade-up">Reservasi & Kontak</h2>
+    <div class="reservation">
+      <form data-aos="fade-up" data-aos-delay="200">
+        <input type="text" placeholder="Nama Lengkap" required>
+        <input type="email" placeholder="Email Aktif" required>
+        <input type="date" required>
+        <input type="time" required>
+        <button>Book Your Table</button>
+      </form>
+
+      <div class="social-icons" data-aos="fade-up" data-aos-delay="300">
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-x-twitter"></i></a>
+        <a href="#"><i class="fab fa-whatsapp"></i></a>
+        <a href="#"><i class="fab fa-youtube"></i></a>
+        <a href="#"><i class="fab fa-linkedin"></i></a>
+      </div>
+    </div>
+  </section>
+
+  <footer>&copy; 2025 Coffee Shop — Brewed with Passion</footer>
+
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 1000, once: true, easing: "ease-in-out" });
+  </script>
+
+<!-- LOGIN MODAL -->
+<div class="login-modal" id="loginModal">
+  <div class="login-box">
+    <h2>Login</h2>
+    
+    <?php if(isset($_SESSION['errors'])): ?>
+      <div style="color: red; background: #ffeaea; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+        <?php 
+          foreach($_SESSION['errors'] as $error) {
+            echo "<p>$error</p>";
+          }
+          unset($_SESSION['errors']);
+        ?>
+      </div>
+    <?php endif; ?>
+    
+    <form action="login.php" method="POST">
+      <input type="text" name="username" placeholder="Username atau Email" required>
+      <input type="password" name="password" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+    
+    <p style="margin-top: 10px; font-size: 14px;">
+      Belum punya akun? <a href="#" onclick="closeLogin(); openRegister();">Daftar di sini</a>
+    </p>
+    
+    <div class="close-login" onclick="closeLogin()">Tutup</div>
+  </div>
+</div>
+
+<script>
+function openLogin() {
+  document.getElementById("loginModal").style.display = "flex";
+}
+
+function closeLogin() {
+  document.getElementById("loginModal").style.display = "none";
+}
+</script>
+
+
+<!-- REGISTER MODAL -->
+<div class="login-modal" id="registerModal">
+  <div class="login-box">
+    <h2>Daftar</h2>
+    
+    <!-- Tampilkan pesan error/success -->
+    <?php if(isset($_SESSION['errors'])): ?>
+      <div style="color: red; background: #ffeaea; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+        <?php 
+          foreach($_SESSION['errors'] as $error) {
+            echo "<p>$error</p>";
+          }
+          unset($_SESSION['errors']);
+        ?>
+      </div>
+    <?php endif; ?>
+    
+    <?php if(isset($_SESSION['success'])): ?>
+      <div style="color: green; background: #eaffea; padding: 10px; border-radius: 5px; margin-bottom: 10px;">
+        <?php echo $_SESSION['success']; unset($_SESSION['success']); ?>
+      </div>
+    <?php endif; ?>
+    
+    <form action="register_proses.php" method="POST" id="registerForm">
+      <input type="text" name="username" placeholder="Username" required>
+      <input type="text" name="phone" placeholder="No HP (contoh: 08123456789)" required>
+      <input type="email" name="email" placeholder="Email" required>
+      <input type="password" name="password" placeholder="Password (minimal 6 karakter)" required>
+      <input type="password" name="confirm_password" placeholder="Konfirmasi Password" required>
+      <button type="submit">Daftar</button>
+    </form>
+    
+    <p style="margin-top: 10px; font-size: 14px;">
+      Sudah punya akun? <a href="#" onclick="closeRegister(); openLogin();">Login di sini</a>
+    </p>
+    
+    <div class="close-login" onclick="closeRegister()">Tutup</div>
+  </div>
+</div>
+
+<script>
+// Validasi client-side sebelum submit
+document.getElementById('registerForm').addEventListener('submit', function(e) {
+    const password = document.querySelector('input[name="password"]').value;
+    const confirm = document.querySelector('input[name="confirm_password"]').value;
+    const phone = document.querySelector('input[name="phone"]').value;
+    
+    let errors = [];
+    
+    // Validasi password
+    if (password.length < 6) {
+        errors.push("Password minimal 6 karakter");
+    }
+    
+    if (password !== confirm) {
+        errors.push("Konfirmasi password tidak sama");
+    }
+    
+    // Validasi nomor HP
+    if (!/^[0-9]{10,15}$/.test(phone)) {
+        errors.push("Nomor HP harus 10-15 digit angka");
+    }
+    
+    // Tampilkan error jika ada
+    if (errors.length > 0) {
+        e.preventDefault();
+        document.getElementById('registerErrors').innerHTML = errors.join('<br>');
+        document.getElementById('registerErrors').style.display = 'block';
+    }
+});
+</script>
+<script>
+function openRegister() {
+  document.getElementById("registerModal").style.display = "flex";
+}
+function closeRegister() {
+  document.getElementById("registerModal").style.display = "none";
+}
+</script>
+
+
+<script>
+const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+</script>
+
+<div class="cart-modal" id="cartModal">
+  <div class="cart-box">
+    <h3>Keranjang</h3>
+    <div id="cartItems"></div>
+    <button onclick="closeCart()">Tutup</button>
+  </div>
+</div>
+
+<script>
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+function updateCartCount() {
+  const cartCount = document.getElementById("cartCount");
+  if (!cartCount) return; // PENTING
+  let total = 0;
+  cart.forEach(item => total += item.qty);
+  cartCount.innerText = total;
+}
+
+updateCartCount();
+</script>
+
+<script>
+document.querySelectorAll(".add-cart").forEach(btn => {
+  btn.addEventListener("click", () => {
+
+    if (!isLoggedIn) {
+      alert("Silakan login terlebih dahulu");
+      window.location.href = "index.html"; // arahkan ke login
+      return;
+    }
+
+    const item = btn.closest(".menu-item");
+    const name = item.dataset.name;
+    const price = parseInt(item.dataset.price);
+
+    if (!name || !price) {
+      alert("Data menu belum lengkap");
+      return;
+    }
+
+    const existing = cart.find(i => i.name === name);
+
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      cart.push({ name, price, qty: 1 });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    updateCartCount();
+    alert(name + " ditambahkan ke keranjang");
+  });
+});
+</script>
+
+<script>
+  function updateCartCount() {
+  const cartCount = document.getElementById("cartCount");
+  if (!cartCount) return; // PENTING
+  let total = 0;
+  cart.forEach(item => total += item.qty);
+  cartCount.innerText = total;
+}
+</script>
+
+<script>
+const cartBtn = document.getElementById("cartBtn");
+const cartModal = document.getElementById("cartModal");
+
+cartBtn.addEventListener("click", () => {
+  renderCart();
+  cartModal.style.display = "flex";
+});
+
+function closeCart() {
+  cartModal.style.display = "none";
+}
+
+function renderCart() {
+  const cartItems = document.getElementById("cartItems");
+  const cartTotal = document.getElementById("cartTotal");
+
+  cartItems.innerHTML = "";
+  let total = 0;
+
+  if (cart.length === 0) {
+    cartItems.innerHTML = "<p>Keranjang kosong</p>";
+    cartTotal.innerText = "0";
+    return;
+  }
+
+  cart.forEach((item, index) => {
+    const subtotal = item.price * item.qty;
+    total += subtotal;
+
+    cartItems.innerHTML += `
+      <div class="cart-item">
+        <span>${item.name}</span>
+
+        <div class="qty-box">
+          <button onclick="decreaseQty(${index})">−</button>
+          <span>${item.qty}</span>
+          <button onclick="increaseQty(${index})">+</button>
+        </div>
+
+        <span>Rp ${subtotal.toLocaleString()}</span>
+        <button onclick="removeItem(${index})">🗑️</button>
+      </div>
+    `;
+  });
+
+  cartTotal.innerText = total.toLocaleString();
+}
+
+function increaseQty(index) {
+  cart[index].qty++;
+  updateCartCount();
+  renderCart();
+}
+
+function decreaseQty(index) {
+  if (cart[index].qty > 1) {
+    cart[index].qty--;
+  } else {
+    cart.splice(index, 1);
+  }
+  updateCartCount();
+  renderCart();
+}
+
+function removeItem(index) {
+  cart.splice(index, 1);
+  updateCartCount();
+  renderCart();
+}
+</script>
+
+<script>
+function checkout() {
+  if (cart.length === 0) {
+    alert("Keranjang masih kosong");
+    return;
+  }
+
+  let summary = "Pesanan Anda:\n\n";
+  let total = 0;
+
+  cart.forEach(item => {
+    const subtotal = item.price * item.qty;
+    total += subtotal;
+    summary += `${item.name} x ${item.qty} = Rp ${subtotal.toLocaleString()}\n`;
+  });
+
+  summary += `\nTotal: Rp ${total.toLocaleString()}`;
+  
+  if (confirm(summary + "\n\nLanjutkan checkout?")) {
+    // Kirim ke server
+    fetch('checkout.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        items: cart,
+        total: total
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        alert(data.message);
+        // Reset keranjang
+        cart = [];
+        localStorage.removeItem("cart");
+        updateCartCount();
+        closeCart();
+        // Refresh halaman atau redirect
+        window.location.href = "dashboard.php";
+      } else {
+        alert("Error: " + data.message);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      alert("Terjadi kesalahan saat checkout");
+    });
+  }
+}
+</script>
+<script>
+// Cek status login
+function checkLoginStatus() {
+    const isLoggedIn = <?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>;
+    const username = "<?php echo $_SESSION['username'] ?? ''; ?>";
+    const authArea = document.querySelector('.nav-auth');
+    
+    if (authArea) {
+        if (isLoggedIn && username) {
+            // User sudah login
+            authArea.innerHTML = `
+                <span class="user-greeting">Halo, ${username}!</span>
+                <a href="dashboard.php" class="auth-btn">Dashboard</a>
+                <a href="logout.php" class="auth-btn outline">Logout</a>
+                <div class="cart-icon" id="cartBtn">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+            `;
+        } else {
+            // User belum login
+            authArea.innerHTML = `
+                <button class="auth-btn" onclick="openLogin()">Login</button>
+                <button class="auth-btn outline" onclick="openRegister()">Daftar</button>
+                <div class="cart-icon" id="cartBtn">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </div>
+            `;
+        }
+    }
+}
+
+// Panggil saat halaman load
+document.addEventListener('DOMContentLoaded', function() {
+    checkLoginStatus();
+    updateCartCount(); // Fungsi dari cart system
+});
+
+// Fungsi untuk cart (sudah ada, pastikan tetap ada)
+function updateCartCount() {
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    let total = 0;
+    cart.forEach(item => total += item.qty);
+    
+    const cartCount = document.getElementById('cartCount');
+    if (cartCount) {
+        cartCount.innerText = total;
+    }
+}
+
+// Fungsi untuk tombol cart
+document.addEventListener('click', function(e) {
+    if (e.target.closest('#cartBtn') || e.target.closest('.cart-icon')) {
+        if (!<?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>) {
+            alert('Silakan login terlebih dahulu untuk melihat keranjang');
+            openLogin();
+            return;
+        }
+        openCart();
+    }
+});
+
+// Fungsi untuk tombol "Tambah ke Keranjang"
+document.querySelectorAll('.add-cart').forEach(btn => {
+    btn.addEventListener('click', function() {
+        if (!<?php echo isset($_SESSION['user_id']) ? 'true' : 'false'; ?>) {
+            alert('Silakan login terlebih dahulu untuk menambahkan ke keranjang');
+            openLogin();
+            return;
+        }
+        
+        // Kode tambah ke keranjang yang sudah ada
+        const item = this.closest('.menu-item');
+        const name = item.dataset.name;
+        const price = parseInt(item.dataset.price);
+        
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const existing = cart.find(i => i.name === name);
+        
+        if (existing) {
+            existing.qty += 1;
+        } else {
+            cart.push({ name, price, qty: 1 });
+        }
+        
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartCount();
+        alert(name + ' ditambahkan ke keranjang');
+    });
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keranjang</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f7efe5;
+  padding: 30px;
+}
+
+h1 {
+  text-align: center;
+  color: #7a4a2e;
+}
+
+.cart-item {
+  background: white;
+  padding: 15px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cart-item button {
+  padding: 5px 10px;
+  margin: 0 3px;
+  cursor: pointer;
+}
+
+.total {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 20px;
+  text-align: right;
+}
+
+.checkout {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 15px;
+  background: #7a4a2e;
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 16px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🛒 Keranjang Belanja</h1>
+
+<div id="cartList"></div>
+
+<div class="total" id="totalHarga">Total: Rp 0</div>
+
+<button class="checkout" onclick="checkout()">Checkout</button>
+
+<script>
+// ================== STATUS LOGIN ==================
+let isLoggedIn = localStorage.getItem("login") === "true";
+
+// ================== DATA CART ==================
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+const cartList = document.getElementById("cartList");
+const totalHarga = document.getElementById("totalHarga");
+
+// ================== RENDER CART ==================
+function renderCart() {
+  cartList.innerHTML = "";
+  let total = 0;
+
+  if (cart.length === 0) {
+    cartList.innerHTML = "<p>Keranjang masih kosong</p>";
+    totalHarga.innerText = "Total: Rp 0";
+    return;
+  }
+
+  cart.forEach((item, index) => {
+    total += item.price * item.qty;
+
+    cartList.innerHTML += `
+      <div class="cart-item">
+        <div>
+          <strong>${item.name}</strong><br>
+          Rp ${item.price.toLocaleString()}
+        </div>
+
+        <div>
+          <button onclick="ubahQty(${index}, -1)">-</button>
+          ${item.qty}
+          <button onclick="ubahQty(${index}, 1)">+</button>
+          <button onclick="hapusItem(${index})">❌</button>
+        </div>
+      </div>
+    `;
+  });
+
+  totalHarga.innerText = "Total: Rp " + total.toLocaleString();
+}
+
+// ================== QTY ==================
+function ubahQty(index, nilai) {
+  cart[index].qty += nilai;
+
+  if (cart[index].qty <= 0) {
+    cart.splice(index, 1);
+  }
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+  renderCart();
+}
+
+// ================== HAPUS ==================
+function hapusItem(index) {
+  cart.splice(index, 1);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  renderCart();
+}
+
+// ================== CHECKOUT ==================
+function checkout() {
+  if (!isLoggedIn) {
+    alert("Silakan login terlebih dahulu");
+    window.location.href = "login.html";
+    return;
+  }
+
+  alert("Checkout berhasil 🎉");
+  cart = [];
+  localStorage.removeItem("cart");
+  renderCart();
+}
+
+// ================== LOAD ==================
+renderCart();
+</script>
+
+</body>
+</html>
